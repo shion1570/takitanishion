@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ガチャゲーム</title>
+
+<style>
+
+body{
+font-family:sans-serif;
+text-align:center;
+background:linear-gradient(180deg,#0f2027,#203a43,#2c5364);
+color:white;
+margin:0;
+overflow:hidden;
+}
+
+h1{
+margin-top:30px;
+}
+
+button{
+padding:15px 40px;
+font-size:20px;
+border:none;
+border-radius:10px;
+background:gold;
+cursor:pointer;
+}
+
+button:hover{
+background:orange;
+}
+
+#result{
+margin-top:40px;
+font-size:26px;
+}
+
+.card{
+margin-top:20px;
+padding:25px;
+border-radius:12px;
+display:inline-block;
+min-width:220px;
+font-size:24px;
+}
+
+.star3{background:#888;}
+.star4{background:#3aa0ff;}
+.star5{background:#a93aff;}
+.star6{background:gold;color:black;font-weight:bold;}
+
+.loading{
+animation:flash 0.5s infinite alternate;
+}
+
+@keyframes flash{
+from{opacity:1;}
+to{opacity:0.4;}
+}
+
+/* ★6確定演出 */
+
+.rainbow{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(
+90deg,
+red,orange,yellow,green,cyan,blue,purple,red
+);
+background-size:800%;
+animation:rainbowMove 2s linear infinite;
+z-index:-1;
+}
+
+@keyframes rainbowMove{
+0%{background-position:0%}
+100%{background-position:200%}
+}
+
+.bigText{
+font-size:40px;
+color:gold;
+text-shadow:0 0 20px white;
+margin-top:30px;
+animation:pop 0.6s ease;
+}
+
+@keyframes pop{
+0%{transform:scale(0)}
+100%{transform:scale(1)}
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>スマホゲーム風ガチャ</h1>
+
+<button onclick="pullGacha()">ガチャを引く</button>
+
+<div id="effect"></div>
+
+<div id="result"></div>
+
+<script>
+
+const characters=[
+{name:"スライム",rarity:3},
+{name:"ゴブリン",rarity:3},
+{name:"ナイト",rarity:4},
+{name:"魔法使い",rarity:4},
+{name:"ドラゴン",rarity:5},
+{name:"伝説の勇者",rarity:6}
+];
+
+function pullGacha(){
+
+const result=document.getElementById("result");
+const effect=document.getElementById("effect");
+
+effect.innerHTML="";
+result.classList.add("loading");
+result.innerHTML="ガチャ演出中...";
+
+setTimeout(()=>{
+
+result.classList.remove("loading");
+
+let rand=Math.random();
+let rarity;
+
+if(rand<0.6) rarity=3;
+else if(rand<0.85) rarity=4;
+else if(rand<0.97) rarity=5;
+else rarity=6;
+
+let pool=characters.filter(c=>c.rarity===rarity);
+let char=pool[Math.floor(Math.random()*pool.length)];
+
+/* ★6確定演出 */
+
+if(rarity===6){
+
+effect.innerHTML='<div class="rainbow"></div>';
+
+result.innerHTML=`
+<div class="bigText">🌈 ★6確定！ 🌈</div>
+<div class="card star6">
+★6<br>${char.name}
+</div>
+`;
+
+}else{
+
+result.innerHTML=`
+<div class="card star${rarity}">
+★${rarity}<br>${char.name}
+</div>
+`;
+
+}
+
+},1500);
+
+}
+
+</script>
+
+</body>
+</html>
